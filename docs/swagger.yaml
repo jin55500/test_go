@@ -1,0 +1,240 @@
+definitions:
+  auth.LoginForm:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  model.TransferCreateForm:
+    properties:
+      BankNumber:
+        type: string
+      credit:
+        type: number
+    required:
+    - BankNumber
+    - credit
+    type: object
+  model.UserCreateForm:
+    properties:
+      bankNumber:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+    required:
+    - bankNumber
+    - name
+    - password
+    - surname
+    - username
+    type: object
+  model.UserSwagger:
+    properties:
+      BankNumber:
+        type: string
+      Credit:
+        type: number
+      Name:
+        type: string
+      Surname:
+        type: string
+      Username:
+        type: string
+      id:
+        type: integer
+    type: object
+  model.UserUpdateForm:
+    properties:
+      bankNumber:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+    required:
+    - bankNumber
+    - name
+    - surname
+    - username
+    type: object
+info:
+  contact: {}
+paths:
+  /accounting/transfer:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        โอนเครดิตให้ user อื่น
+        ข้อมูล object ที่ต้องการ ส่งเป็น raw json
+        {
+        bankNumber : เลขที่บัญชี
+        credit : จำนวนเครดิตที่ต้องการโอน
+        }
+      parameters:
+      - description: tranfer credit success!
+        in: body
+        name: accounting
+        required: true
+        schema:
+          $ref: '#/definitions/model.TransferCreateForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - accounting
+  /accounting/transfer-list:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        ประวัติการโอนเครดิต โดย auth
+        ข้อมูล params ที่ต้องการ
+        date_start : วันที่เริ่มต้น format ("2024-06-19")
+        date_end : วันที่สิ้นสุด format ("2024-06-20")
+        ===============================================================
+        response ตัวแปร Type = ชนิดของ transection
+        receive = ได้รับ credit
+        transfer = โอน credit
+      parameters:
+      - description: 'Start date (format: ''2024-06-19'')'
+        in: query
+        name: date_start
+        required: true
+        type: string
+      - description: 'End date (format: ''2024-06-20'')'
+        in: query
+        name: date_end
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - accounting
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        เข้าสู่ระบบ
+        ข้อมูล object ที่ต้องการ ส่งเป็น raw json
+        {
+        username : ชื่อผู้ใช้
+        password : รหัสผ่าน
+        }
+      parameters:
+      - description: login success!
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - user
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      description: ดึงข้อมูลโปรไฟล์ โดย auth
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserSwagger'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        แก้ไขข้อมูลส่วนตัวโดย auth
+        ข้อมูล object ที่ต้องการ ส่งเป็น raw json
+        {
+        username : ชื่อผู้ใช้ | ห้ามซ้ำ
+        password : รหัสผ่าน
+        name : ชื่อ
+        surname : นามกสุล
+        bankNumber : เลขที่บัญชี | 10 หลัก | ห้ามซ้ำ
+        }
+      parameters:
+      - description: update data success!
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserUpdateForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        สมัครสมาชิก
+        ข้อมูล object ที่ต้องการ ส่งเป็น raw json
+        {
+        username : ชื่อผู้ใช้ | ห้ามซ้ำ
+        password : รหัสผ่าน
+        name : ชื่อ
+        surname : นามกสุล
+        bankNumber : เลขที่บัญชี | 10 หลัก | ห้ามซ้ำ
+        }
+      parameters:
+      - description: register success!
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserCreateForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      tags:
+      - user
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

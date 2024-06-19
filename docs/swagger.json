@@ -1,0 +1,318 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/accounting/transfer": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "โอนเครดิตให้ user อื่น\nข้อมูล object ที่ต้องการ ส่งเป็น raw json\n{\nbankNumber : เลขที่บัญชี\ncredit : จำนวนเครดิตที่ต้องการโอน\n}",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounting"
+                ],
+                "parameters": [
+                    {
+                        "description": "tranfer credit success!",
+                        "name": "accounting",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TransferCreateForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/accounting/transfer-list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "ประวัติการโอนเครดิต โดย auth\nข้อมูล params ที่ต้องการ\ndate_start : วันที่เริ่มต้น format (\"2024-06-19\")\ndate_end : วันที่สิ้นสุด format (\"2024-06-20\")\n===============================================================\nresponse ตัวแปร Type = ชนิดของ transection\nreceive = ได้รับ credit\ntransfer = โอน credit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounting"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date (format: '2024-06-19')",
+                        "name": "date_start",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date (format: '2024-06-20')",
+                        "name": "date_end",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "เข้าสู่ระบบ\nข้อมูล object ที่ต้องการ ส่งเป็น raw json\n{\nusername : ชื่อผู้ใช้\npassword : รหัสผ่าน\n}",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "login success!",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.LoginForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/me": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "ดึงข้อมูลโปรไฟล์ โดย auth",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserSwagger"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "แก้ไขข้อมูลส่วนตัวโดย auth\nข้อมูล object ที่ต้องการ ส่งเป็น raw json\n{\nusername : ชื่อผู้ใช้ | ห้ามซ้ำ\npassword : รหัสผ่าน\nname : ชื่อ\nsurname : นามกสุล\nbankNumber : เลขที่บัญชี | 10 หลัก | ห้ามซ้ำ\n}",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "update data success!",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserUpdateForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "description": "สมัครสมาชิก\nข้อมูล object ที่ต้องการ ส่งเป็น raw json\n{\nusername : ชื่อผู้ใช้ | ห้ามซ้ำ\npassword : รหัสผ่าน\nname : ชื่อ\nsurname : นามกสุล\nbankNumber : เลขที่บัญชี | 10 หลัก | ห้ามซ้ำ\n}",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "register success!",
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserCreateForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth.LoginForm": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TransferCreateForm": {
+            "type": "object",
+            "required": [
+                "BankNumber",
+                "credit"
+            ],
+            "properties": {
+                "BankNumber": {
+                    "type": "string"
+                },
+                "credit": {
+                    "type": "number"
+                }
+            }
+        },
+        "model.UserCreateForm": {
+            "type": "object",
+            "required": [
+                "bankNumber",
+                "name",
+                "password",
+                "surname",
+                "username"
+            ],
+            "properties": {
+                "bankNumber": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserSwagger": {
+            "type": "object",
+            "properties": {
+                "BankNumber": {
+                    "type": "string"
+                },
+                "Credit": {
+                    "type": "number"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "Surname": {
+                    "type": "string"
+                },
+                "Username": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.UserUpdateForm": {
+            "type": "object",
+            "required": [
+                "bankNumber",
+                "name",
+                "surname",
+                "username"
+            ],
+            "properties": {
+                "bankNumber": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
